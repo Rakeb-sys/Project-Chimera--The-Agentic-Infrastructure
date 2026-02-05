@@ -1,0 +1,24 @@
+[project]
+name = "mcp-multi-agent"
+version = "0.1.0"
+description = "Hierarchical MCP Multi-Agent System"
+requires-python = ">=3.10"
+
+dependencies = [
+    "mcp>=1.2.0",
+    "fastapi",
+    "uvicorn",
+    "pydantic",
+    "langgraph",
+    "python-dotenv",
+    "rich",
+    "httpx>=0.24.0",
+]
+
+[build-system]
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"
+
+
+# create integrations dir
+New-Item -ItemType Directory -Force -Path integrations
