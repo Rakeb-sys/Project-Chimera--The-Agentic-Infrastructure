@@ -1,5 +1,9 @@
 from mcp.server.fastmcp import FastMCP
 
+from integrations.openclaw_integration import OpenClawClient, register_openclaw_tools
+openclaw = OpenClawClient()  # uses OPENCLAW_BASE_URL and OPENCLAW_API_KEY from .env
+register_openclaw_tools(mcp, openclaw)
+
 mcp = FastMCP("AgentServer")
 
 @mcp.tool()
