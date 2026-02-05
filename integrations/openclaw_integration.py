@@ -52,43 +52,18 @@ class OpenClawClient:
             return False
 
 
-def register_openclaw_tools(mcp, client: OpenClawClient, telemetry=None):
+def register_openclaw_tools(mcp, client: OpenClawClient):
     @mcp.tool()
     def openclaw_invoke(endpoint: str, payload: dict, method: str = "POST") -> dict:
-        if telemetry:
-            telemetry.track("openclaw.invoke.start", {"endpoint": endpoint})
-        try:
-            res = client.invoke(endpoint, payload, method=method)
-            if telemetry:
-                telemetry.track("openclaw.invoke.success", {"endpoint": endpoint})
-            return res
-        except Exception as e:
-            if telemetry:
-                telemetry.track("openclaw.invoke.error", {"endpoint": endpoint, "error": str(e)})
-            raise
+        return client.invoke(endpoint, payload, method=method)
 
     @mcp.tool()
     def openclaw_predict(payload: dict, endpoint: str = "/predict") -> dict:
-        if telemetry:
-            telemetry.track("openclaw.predict.start", {"endpoint": endpoint})
-        try:
-            res = client.predict(payload, endpoint=endpoint)
-            if telemetry:
-                telemetry.track("openclaw.predict.success", {"endpoint": endpoint})
-            return res
-        except Exception as e:
-            if telemetry:
-                telemetry.track("openclaw.predict.error", {"endpoint": endpoint, "error": str(e)})
-            raise
+        return client.predict(payload, endpoint=endpoint)
 
     @mcp.tool()
     def openclaw_health() -> bool:
-        if telemetry:
-            telemetry.track("openclaw.health.check")
-        ok = client.health()
-        if telemetry:
-            telemetry.track("openclaw.health.result", {"ok": ok})
-        return ok
+        return client.health()
 
     return {
         "openclaw_invoke": openclaw_invoke,
