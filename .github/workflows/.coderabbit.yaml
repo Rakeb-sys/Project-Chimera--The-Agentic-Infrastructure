@@ -1,0 +1,7 @@
+reviews:
+  spec_alignment: true
+  security_scan: true
+  require_tests: true
+
+policies:
+  block_merge_if_tests_fail: true
