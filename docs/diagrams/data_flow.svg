@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="900" viewBox="0 0 1200 900">
+  <style>.title{font:bold 16px sans-serif;} pre{font:12px monospace;white-space:pre-wrap;}</style>
+  <rect width="100%" height="100%" fill="#fff"/>
+  <text x="20" y="30" class="title">Data Flow Diagram (Mermaid source)</text>
+  <foreignObject x="20" y="50" width="1160" height="820"><body xmlns="http://www.w3.org/1999/xhtml"><pre>
+%% Data Flow Diagram
+flowchart LR
+  A[Submit Task / API] --> B[Orchestrator (MCP)]
+  B --> C[Enqueue Step -> MQ]
+  C --> D[Download Agent]
+  D --> E{Success?}
+  E -- no --> F[Mark Task Failed -> Telemetry]
+  E -- yes --> G[Store Artifact -> Object Store + Artifacts Table]
+  G --> H[Transcribe Agent]
+  H --> I[Transcript Stored]
+  I --> J[Trend Fetcher]
+  J --> K[Enrich Metadata]
+  K --> L[Policy Service]
+  L --> M{Pass?}
+  M -- no --> N[Human Review Queue -> Human Review UI]
+  N --> O[Approve -> MCP]
+  M -- yes --> O
+  O --> P[Poster Agent]
+  P --> Q[OpenClaw / External Publish]
+  Q --> R[Telemetry Collector]
+  R --> S[Feedback / Audit ETL -> Postgres]
+  </pre></body></foreignObject>
+</svg>

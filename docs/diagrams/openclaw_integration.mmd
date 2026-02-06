@@ -1,0 +1,9 @@
+%% OpenClaw Integration Diagram
+flowchart TD
+  A[Instance / Agent Runtime] --> B[Assemble Status Payload]
+  B --> C[POST to OPENCLAW_BASE_URL:/openclaw/status]
+  C --> D{HTTP 2xx?}
+  D -- yes --> E[Log Success Telemetry]
+  D -- no --> F[Schedule Retry (backoff)]
+  F --> C
+  C --> G[OpenClaw Consumers]

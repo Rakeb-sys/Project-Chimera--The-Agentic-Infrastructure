@@ -1,0 +1,18 @@
+Spec Kit init attempt failed
+
+What happened:
+- The Python package specify (version 0.0.9) is installed in the project's .venv.
+- This package appears to be a test runner and exposes a __main__ that expects file paths.
+- Running `specify init --here --ai copilot --force` failed because those CLI flags are unrecognized by this package.
+
+Observed command and error:
+- Command attempted: `python -m specify init --here --ai copilot --force`
+- Error: `__main__.py: error: unrecognized arguments: --here --ai copilot --force`
+
+Next steps / options:
+1) If you intended a different "Spec Kit" package (a CLI that supports `specify init`), please tell me the exact package name (PyPI or npm) and I will install it into `.venv` and rerun the init.
+2) If you want me to proceed by creating a basic `.specify/config.yaml` and stubs locally (without the official CLI), I have added a minimal config file `config.yaml`.
+
+I did NOT overwrite any existing files other than adding these new files.
+
+Timestamp: 2026-02-06

@@ -1,0 +1,77 @@
+# Production-grade MCP telemetry configuration for Tenx MCP Sense
+version: 1
+project: "Project Chimera"
+environment: "${ENV:-development}"
+
+# Tenx MCP Sense connection and credential configuration.
+tenx_mcp_sense:
+  # Endpoint: set via environment variable or default placeholder
+  endpoint: "${TENX_MCP_SENSE_ENDPOINT:-https://mcppulse.10academy.org/proxy}"
+  # Secret reference: the agent/runtime must read this env var for the API key
+  api_key_env: TENX_MCP_SENSE_API_KEY
+  project_name: "project-chimera"
+
+  # Default headers applied to telemetry requests (can be overridden at runtime)
+  default_headers:
+    X-Device: "windows"
+    X-Coding-Tool: "vscode"
+
+  # JSON-RPC settings: server expects telemetry via a JSON-RPC envelope
+  jsonrpc:
+    enabled: true
+    method: "telemetry.emit"
+    # Where agents should include the payload in the request
+    params_key: "params"
+
+  # Header-based alternatives (use X-Session-ID for session correlation)
+  header_support:
+    authorization: "Authorization"
+    session_id: "X-Session-ID"
+
+# Tracing and capture options
+tracing:
+  enabled: true          # enable distributed tracing capture
+  trace_request_response: true
+  enable_agent_run_telemetry: true
+
+# Sampling and rate control (adjust for production scale)
+telemetry_sampling:
+  enabled: true
+  sample_rate: 1.0       # 1.0 = 100% of events captured; set <1.0 to sample
+
+# Local storage for traces and specs (agents should write here)
+storage:
+  traces_dir: ".specify/traces"     # JSON trace files / line-delimited JSON
+  specs_dir: ".specify/specs"       # Spec-Kit outputs and generated specs
+
+# Retry and timeout policy for telemetry HTTP requests
+retry_policy:
+  max_retries: 4
+  backoff_factor: 0.5    # exponential backoff base
+  status_forcelist: [429, 500, 502, 503, 504]
+  # Individual request timeout (seconds)
+  request_timeout: 10
+
+# Session and orchestration support
+session:
+  enabled: true
+  # Agents MUST include a session id either as header `X-Session-ID` or in params.session
+  header_name: "X-Session-ID"
+  param_name: "session"
+  # Support multiple agent orchestration runs (keep limited history locally)
+  orchestration:
+    enabled: true
+    retention_runs: 50
+    run_id_template: "run-{timestamp}-{uuid}"
+
+# Logging and observability level for local agents
+logging:
+  level: "INFO"
+  format: "%(asctime)s %(levelname)s %(name)s - %(message)s"
+
+# Notes:
+# - Use environment variables for secrets (TENX_MCP_SENSE_API_KEY). Do not commit keys.
+# - Agents should include 'session' metadata on every telemetry event to ensure
+#   proper correlation across agent runs and related traces.
+# - JSON-RPC envelope must follow the proxy's contract (jsonrpc: '2.0', method,
+#   id, and params). Use `method: telemetry.emit` by default.

@@ -1,0 +1,32 @@
+%% System Component Diagram
+classDiagram
+  class MCP {
+    +submitTask()
+    +getTaskStatus()
+    +assignStep()
+  }
+  class MessageQueue {
+    +enqueue()
+    +dequeue()
+  }
+  class WorkerAgent {
+    +run(task)
+    +emitTelemetry()
+  }
+  class PolicyService {
+    +evaluate(candidate)
+  }
+  class TelemetryCollector {
+    +ingest(event)
+    +query()
+  }
+  class ObjectStore {
+    +put(blob)
+    +get(blob)
+  }
+  MCP --> MessageQueue
+  MessageQueue --> WorkerAgent
+  WorkerAgent --> ObjectStore
+  WorkerAgent --> TelemetryCollector
+  MCP --> PolicyService
+  PolicyService --> TelemetryCollector

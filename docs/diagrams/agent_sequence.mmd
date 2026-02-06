@@ -1,0 +1,32 @@
+%% Agent Interaction Sequence Diagram
+sequenceDiagram
+  participant Client
+  participant MCP
+  participant MQ
+  participant Downloader
+  participant Transcriber
+  participant Policy
+  participant Reviewer
+  participant Poster
+  participant OpenClaw
+  participant Telemetry
+
+  Client->>MCP: POST /tasks/submit (pipeline)
+  MCP->>MQ: enqueue download task (task_id, request_id)
+  MQ->>Downloader: deliver task
+  Downloader->>Storage: upload blob (s3://...)
+  Downloader->>MCP: artifact record (artifact_id)
+  Downloader->>Telemetry: emit task.complete
+  MCP->>MQ: enqueue transcribe task
+  MQ->>Transcriber: deliver task
+  Transcriber->>DB: write transcript (segments)
+  Transcriber->>Telemetry: emit transcript.complete
+  MCP->>Policy: evaluate(candidate)
+  Policy-->>MCP: flagged (confidence low)
+  MCP->>Reviewer: create review task
+  Reviewer-->>MCP: approve
+  MCP->>Poster: dispatch publish
+  Poster->>OpenClaw: POST content
+  OpenClaw-->>Poster: 200
+  Poster->>Telemetry: emit publish.event
+  Telemetry->>DB: persist events for audit

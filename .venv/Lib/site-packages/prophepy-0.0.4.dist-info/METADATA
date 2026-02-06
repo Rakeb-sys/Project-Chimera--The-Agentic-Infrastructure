@@ -1,0 +1,51 @@
+Metadata-Version: 2.1
+Name: prophepy
+Version: 0.0.4
+Summary: Python mocks made for humans
+Home-page: UNKNOWN
+License: MIT
+Author: Einenlum
+Author-email: yann.rabiller@gmail.com
+Requires-Python: >=3.7,<4.0
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Programming Language :: Python
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3 :: Only
+Classifier: Programming Language :: Python :: 3.7
+Classifier: Topic :: Software Development :: Testing
+Classifier: Topic :: Software Development :: Testing :: Acceptance
+Classifier: Topic :: Software Development :: Testing :: BDD
+Classifier: Topic :: Software Development :: Testing :: Mocking
+Classifier: Topic :: Software Development :: Testing :: Unit
+Description-Content-Type: text/markdown
+
+# Prophepy
+
+Python mocks made for humans.
+Heavily inspired by the great PHP's [Prophecy](https://github.com/phpspec/prophecy).
+
+## Usage
+
+```python
+from examples.calculator import Calculator
+from examples.displayer import Displayer
+from prophepy import prophesize
+
+calculator = prophesize(Calculator)
+displayer = Displayer(calculator._reveal())
+
+calculator.add(2, 3)._should_be_called()
+calculator.add(2, 3)._will_return(5)
+displayer.display_add(2, 3)
+
+calculator.check_prophecies()
+```
+
+## Install
+
+`pip install prophepy`
+
+## Tests
+
+`python -m unittest tests/test.py`
+

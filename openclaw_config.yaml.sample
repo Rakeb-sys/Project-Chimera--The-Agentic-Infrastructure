@@ -1,0 +1,33 @@
+---
+# OpenClaw configuration sample for Project Chimera
+model_providers:
+  openclaw:
+    base_url: "${OPENCLAW_API_URL:-http://127.0.0.1:9000}"
+    api_key: "${OPENCLAW_API_KEY:-your_openclaw_api_key_here}"
+    default_model: "openclaw-gpt-4"
+
+telemetry:
+  enabled: true
+  provider: tenx_mcp_sense
+  endpoint: "${TENX_MCP_SENSE_ENDPOINT:-https://mcppulse.10academy.org/proxy}"
+  api_key_env: TENX_MCP_SENSE_API_KEY
+  level: info
+
+rate_limits:
+  requests_per_minute: 120
+  concurrent_requests: 8
+
+retry_policy:
+  max_retries: 3
+  backoff_factor: 0.5
+  status_forcelist: [429, 500, 502, 503, 504]
+
+logging:
+  level: INFO
+  format: "%(asctime)s %(levelname)s %(name)s - %(message)s"
+
+# Additional provider examples (swap or extend as needed)
+providers:
+  - name: local
+    type: http
+    base_url: "http://127.0.0.1:9000"

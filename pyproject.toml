@@ -19,6 +19,3 @@ dependencies = [
 requires = ["setuptools"]
 build-backend = "setuptools.build_meta"
 
-
-# create integrations dir
-New-Item -ItemType Directory -Force -Path integrations

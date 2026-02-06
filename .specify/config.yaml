@@ -1,0 +1,8 @@
+# Minimal Spec Kit config stub
+ai: copilot
+initialized: false
+notes: |
+  The real Spec Kit CLI init was not executed because the installed
+  `specify` package in `.venv` appears to be a different project (a test runner).
+  If you want the official Spec Kit initialized here, tell me the package
+  name to install (PyPI or npm) and I'll install and run it.

@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="900" viewBox="0 0 1200 900">
+  <style>.title{font:bold 16px sans-serif;} pre{font:12px monospace;white-space:pre-wrap;}</style>
+  <rect width="100%" height="100%" fill="#fff"/>
+  <text x="20" y="30" class="title">Agent Sequence Diagram (Mermaid source)</text>
+  <foreignObject x="20" y="50" width="1160" height="820"><body xmlns="http://www.w3.org/1999/xhtml"><pre>
+%% Agent Interaction Sequence Diagram
+sequenceDiagram
+  participant Client
+  participant MCP
+  participant MQ
+  participant Downloader
+  participant Transcriber
+  participant Policy
+  participant Reviewer
+  participant Poster
+  participant OpenClaw
+  participant Telemetry
+
+  Client->>MCP: POST /tasks/submit (pipeline)
+  MCP->>MQ: enqueue download task (task_id, request_id)
+  MQ->>Downloader: deliver task
+  Downloader->>Storage: upload blob (s3://...)
+  Downloader->>MCP: artifact record (artifact_id)
+  Downloader->>Telemetry: emit task.complete
+  MCP->>MQ: enqueue transcribe task
+  MQ->>Transcriber: deliver task
+  Transcriber->>DB: write transcript (segments)
+  Transcriber->>Telemetry: emit transcript.complete
+  MCP->>Policy: evaluate(candidate)
+  Policy-->>MCP: flagged (confidence low)
+  MCP->>Reviewer: create review task
+  Reviewer-->>MCP: approve
+  MCP->>Poster: dispatch publish
+  Poster->>OpenClaw: POST content
+  OpenClaw-->>Poster: 200
+  Poster->>Telemetry: emit publish.event
+  Telemetry->>DB: persist events for audit
+  </pre></body></foreignObject>
+</svg>

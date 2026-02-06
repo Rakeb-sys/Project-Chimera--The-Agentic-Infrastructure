@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1100" height="900" viewBox="0 0 1100 900">
+  <style>.title{font:bold 16px sans-serif;} pre{font:12px monospace;white-space:pre-wrap;}</style>
+  <rect width="100%" height="100%" fill="#fff"/>
+  <text x="20" y="30" class="title">Database ERD (Mermaid source)</text>
+  <foreignObject x="20" y="50" width="1060" height="820"><body xmlns="http://www.w3.org/1999/xhtml"><pre>
+%% Database ERD Diagram
+erDiagram
+  ARTIFACTS {
+    uuid id PK
+    varchar source
+    text source_url
+    text media_uri
+    float duration_seconds
+    text checksum
+    jsonb metadata
+    timestamptz created_at
+  }
+  TRANSCRIPTS {
+    uuid id PK
+    uuid artifact_id FK
+    varchar language
+    jsonb segments
+    timestamptz created_at
+  }
+  TASKS {
+    uuid id PK
+    uuid request_id
+    varchar status
+    jsonb pipeline
+    jsonb result
+    timestamptz created_at
+    timestamptz updated_at
+  }
+  TRENDS {
+    uuid id PK
+    text subject
+    varchar provider
+    varchar metric
+    numeric value
+    timestamptz sampled_at
+  }
+  TELEMETRY_EVENTS {
+    uuid id PK
+    uuid request_id
+    varchar event_type
+    jsonb payload
+    timestamptz timestamp
+  }
+
+  ARTIFACTS ||--o{ TRANSCRIPTS : "has"
+  ARTIFACTS ||--o{ TASKS : "referenced_by"
+  TASKS ||--o{ TELEMETRY_EVENTS : "emits"
+  TRENDS }o--|| ARTIFACTS : "optional_for"
+  </pre></body></foreignObject>
+</svg>
